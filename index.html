@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gestor de pedidos de material</title>
+    <link rel="stylesheet" href="css/estilos.css" />
+    <script src="js/modelo.js" defer></script>
+    <script src="js/calculos.js" defer></script>
+    <script src="js/interfaz.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Gestor de pedidos de material</h1>
+      <p>Catálogo de material informático y de oficina, carrito y pedidos.</p>
+    </header>
+
+    <main>
+      <section id="seccion-catalogo">
+        <h2>Catálogo</h2>
+
+        <div class="filtros">
+          <div class="campo">
+            <label for="busqueda">Buscar por nombre</label>
+            <input
+              type="search"
+              id="busqueda"
+              name="busqueda"
+              placeholder="Por ejemplo: ratón"
+            />
+          </div>
+          <div class="campo">
+            <label for="filtro-categoria">Categoría</label>
+            <select id="filtro-categoria" name="filtro-categoria">
+              <option value="todas">Todas</option>
+            </select>
+          </div>
+          <button type="button" id="limpiar-filtros">Limpiar filtros</button>
+        </div>
+
+        <!-- Las tarjetas de producto se crean desde JavaScript -->
+        <div id="lista-catalogo" class="tarjetas"></div>
+        <p id="aviso-catalogo" class="aviso"></p>
+      </section>
+
+      <section id="seccion-carrito">
+        <h2>Carrito</h2>
+
+        <div id="lista-carrito"></div>
+        <p id="aviso-carrito" class="aviso"></p>
+
+        <dl class="resumen">
+          <dt>Unidades</dt>
+          <dd id="carrito-unidades">0</dd>
+          <dt>Subtotal</dt>
+          <dd id="carrito-subtotal">0.00 €</dd>
+          <dt>Descuento</dt>
+          <dd id="carrito-descuento">0.00 €</dd>
+          <dt>Total</dt>
+          <dd id="carrito-total">0.00 €</dd>
+        </dl>
+        <p class="nota">
+          El descuento es del 10 % cuando el subtotal llega a 100 €.
+        </p>
+      </section>
+
+      <section id="seccion-pedido">
+        <h2>Confirmar pedido</h2>
+
+        <form id="formulario-pedido" novalidate>
+          <div class="campo">
+            <label for="nombre">Nombre y apellidos</label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              required
+              minlength="2"
+              maxlength="60"
+              autocomplete="name"
+            />
+            <span class="error" id="error-nombre"></span>
+          </div>
+
+          <div class="campo">
+            <label for="correo">Correo electrónico</label>
+            <input
+              type="email"
+              id="correo"
+              name="correo"
+              required
+              maxlength="100"
+              autocomplete="email"
+            />
+            <span class="error" id="error-correo"></span>
+          </div>
+
+          <fieldset>
+            <legend>Modalidad de entrega</legend>
+            <label class="radio">
+              <input
+                type="radio"
+                id="entrega-recogida"
+                name="entrega"
+                value="recogida"
+                required
+                checked
+              />
+              Recogida en tienda
+            </label>
+            <label class="radio">
+              <input
+                type="radio"
+                id="entrega-envio"
+                name="entrega"
+                value="envio"
+                required
+              />
+              Envío a domicilio
+            </label>
+            <span class="error" id="error-entrega"></span>
+          </fieldset>
+
+          <div id="datos-envio" hidden>
+            <div class="campo">
+              <label for="direccion">Dirección de envío</label>
+              <input
+                type="text"
+                id="direccion"
+                name="direccion"
+                minlength="5"
+                maxlength="100"
+                autocomplete="street-address"
+              />
+              <span class="error" id="error-direccion"></span>
+            </div>
+
+            <div class="campo">
+              <label for="codigo-postal">Código postal</label>
+              <input
+                type="text"
+                id="codigo-postal"
+                name="codigoPostal"
+                inputmode="numeric"
+                minlength="5"
+                maxlength="5"
+                autocomplete="postal-code"
+              />
+              <span class="error" id="error-codigoPostal"></span>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="observaciones">Observaciones (opcional)</label>
+            <textarea
+              id="observaciones"
+              name="observaciones"
+              maxlength="200"
+              rows="3"
+            ></textarea>
+            <span class="contador"
+              ><span id="contador-observaciones">0</span>/200 caracteres</span
+            >
+            <span class="error" id="error-observaciones"></span>
+          </div>
+
+          <div class="campo">
+            <label class="radio">
+              <input type="checkbox" id="acepta" name="acepta" required />
+              Confirmo que los datos del pedido son correctos
+            </label>
+            <span class="error" id="error-acepta"></span>
+          </div>
+
+          <button type="submit" id="boton-confirmar">Confirmar pedido</button>
+          <p id="aviso-pedido" class="aviso"></p>
+        </form>
+      </section>
+
+      <section id="seccion-historial">
+        <h2>Historial de pedidos</h2>
+
+        <div class="filtros">
+          <div class="campo">
+            <label for="filtro-modalidad">Modalidad</label>
+            <select id="filtro-modalidad" name="filtro-modalidad">
+              <option value="todos">Todos</option>
+              <option value="recogida">Recogida</option>
+              <option value="envio">Envío</option>
+            </select>
+          </div>
+          <button type="button" id="exportar-historial">
+            Exportar historial
+          </button>
+        </div>
+
+        <p class="resumen-historial">
+          Pedidos: <span id="historial-cantidad">0</span> · Importe total:
+          <span id="historial-suma">0.00 €</span>
+        </p>
+
+        <!-- Las entradas del historial se crean desde JavaScript -->
+        <div id="lista-historial"></div>
+        <p id="aviso-historial" class="aviso"></p>
+
+        <div class="campo">
+          <label for="json-historial">JSON del historial</label>
+          <textarea
+            id="json-historial"
+            rows="8"
+            readonly
+            placeholder="Pulsa Exportar historial para ver aquí el JSON"
+          ></textarea>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Práctica de Desarrollo Web en Entorno Cliente · 2.º DAW</p>
+    </footer>
+  </body>
+</html>
